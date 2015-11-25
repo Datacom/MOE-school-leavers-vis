@@ -1,0 +1,15 @@
+id,legend_title,hover_text
+pagetitle,Board of Trustees composition,Headcount of students in a cohort of School Leavers - this information is sourced from the Ministry's ENROL database.
+year,Year beginning March,The year in which students left compulsory school beginning 1 March to end of February the following year.
+decile,Decile,"The decile assigned to the school the board represents. Schools are assinged a socio-economic score based on five census derived scoio-economic factors. The 10 percent of schools with the lowest scores are considered decile 1 schools, the next 10 percent of schools are considered decile 2 schools, etc.  Decile 1 schools have the highest proportion of low SES students."
+ethnicity,Ethnic group,"The ethnic group the student belongs to. Leavers are counted for each level 1 ethnic group they have indicated they belong to. This has lead to about 7% of students being double counted, which can be easily avoided with a slightly different preparation of the data. "
+gender,Gender,The gender of the student. Where this information is not provided to the Ministry it is recorded as unknown.
+type,School Type,"Schools are grouped (by school type) into four sectors of schooling education, Primary, Secondary, Composite and Special. 
+Primary includes school types: Full Primary (Year 1-8), Kura Teina Primary, Contributing (Year 1-6), Intermediate (Year 7-8).
+Composite includes school types: Composite (Year 1-15), Restricted Composite (Year 7-10), Correspondence School, Kura   Teina Composite. 
+Secondary includes school types: Secondary (Year 7-15), Secondary (Year 9-15), Teen Parent Unit.
+Special includes special schools. "
+authority,School Authority,"The ownership of the school for i.e. State, State-Integrated or Vote Education. Private schools do not have a board of trustees. "
+age,Student Age,"The age of the student (in years) as at their last day of attendance in compulsory schooling. Students are legally required to attend schooling until age 16, unless they are granted early leaving exemption. However, a number of students are aged 15 on their last day of attendance and turn 16 during school holidays. "
+qualification,Qualification,"The school leaver's highest level of attainment. Includes students who achieved a equivalent non-NCEA equivalent such as Accelerated Christian Education, International Baccalaureate or Cambridge International exams."
+student_year,Year Level,The academic year level of the student as at their last day of attendance in compulsory schooling.
