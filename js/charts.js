@@ -13,8 +13,10 @@ var donut_outer = 70
 var donut_height = 150
 
 var valueAccessor =function(d){return d.value < 1 ? 0 : d.value}
+var percapAccessor = function(d){return population[d.key] ? d.value/population[d.key].Pop_at_30Jun13 : 0} 
 
 var getkeys;
+var population = {};
 //---------------------CLEANUP functions-------------------------
 
 function cleanup(d) {
@@ -26,7 +28,9 @@ function cleanup(d) {
   else if (d['Qualification: Level 2 or above'] != "Below NCEA Level 2"){d.qualification = d['Qualification: Level 2 or above']}
   else {d.qualification = d['Qualification: Level 1 or above']}
   
-  if (+d['Student: Age'].charAt(4) == 2){d['Student: Age']= "Age 20+"} 
+  if (+d['Student: Age'].charAt(4) == 2){d['Student: Age']= "Age 20+"}
+  
+  d['Region: Territorial Authority'] = d['Region: Territorial Authority'].replace("Lower Hutt", "Hutt")
 
  
 d['Region: Regional Council']=d['Region: Regional Council'].replace("Hawkes","Hawke's")
@@ -46,6 +50,7 @@ d['Region: Regional Council']=d['Region: Regional Council'].replace("Hawkes","Ha
 
 queue()
     .defer(d3.csv,  "data/school_leavers.csv")
+    .defer(d3.csv,  "data/nzdotstat_subnational_population_2013.csv")
     .defer(d3.csv,  "dictionaries/NMS_authority_dict.csv")
     .defer(d3.csv,  "dictionaries/Region_dict.csv")
     .defer(d3.csv,  "dictionaries/titles.csv")
@@ -53,7 +58,7 @@ queue()
     .defer(d3.json, "gis/region_boundaries_singlepart_simp_p001.geojson")
     .await(showCharts);
 
-function showCharts(err, data, auth_dict, region_dict, title_text, council_bounds, region_bounds) {
+function showCharts(err, data, _population, auth_dict, region_dict, title_text, council_bounds, region_bounds) {
 
 //We use dictionary .csv's to store things we might want to map our data to, such as codes to names, names to abbreviations etc.
   
@@ -83,9 +88,18 @@ function showCharts(err, data, auth_dict, region_dict, title_text, council_bound
     _region_dict[name]=entry;
   }
   
+//  for (i in _population) {
+//    entry = _population[i]
+//    trimAll(entry)
+//    name = titleCase(entry.Area)
+//    population[name]=entry;
+//  }
+  
   for (i in data) {
     data[i] = cleanup(data[i]);
   }
+  
+  
   _data = data;
   _council_bounds = council_bounds;
   _region_bounds = region_bounds;    
@@ -274,15 +288,16 @@ function showCharts(err, data, auth_dict, region_dict, title_text, council_bound
   
   d3.select("#district_map").call(zoom);
 
-  function colourRenderlet(chart) {
+  function colourRenderlet1(chart) {
     ext = d3.extent(district_map.data(), district_map.valueAccessor());
-    ext[0]=0.0001;
+    ext[0]=0.000001;
     district_map.colorDomain(ext);
     }  
   
 district_map = dc.geoChoroplethChart("#district_map")
       .dimension(TLA)
       .group(TLA_group)
+      //.valueAccessor(percapAccessor)
       .valueAccessor(valueAccessor)
       .projection(projection)
       .colorAccessor(function(d){return d + 1})
@@ -292,8 +307,8 @@ district_map = dc.geoChoroplethChart("#district_map")
       .overlayGeoJson(_council_bounds.features, 'Territorial_Authority', function(d){return d.properties.TA2013_NAM.replace(' Council', '') })
       .colors(colourscale)
       .title(function(d) {return !d.value ? d.key + ": 0" : d.key + ": " + title_integer_format(d.value)})
-      .on("preRender.color", colourRenderlet)
-      .on("preRedraw.color", colourRenderlet)
+      .on("preRender.color", colourRenderlet1)
+      .on("preRedraw.color", colourRenderlet1)
   
 //---------------------------------Map 2 Regions
   
@@ -304,13 +319,14 @@ district_map = dc.geoChoroplethChart("#district_map")
 
   function colourRenderlet(chart) {
     ext = d3.extent(region_map.data(), region_map.valueAccessor());
-    ext[0]=0.0001;
+    ext[0]=0.000001;
     region_map.colorDomain(ext);
   }
 
   region_map = dc.geoChoroplethChart("#region_map")
       .dimension(region)
       .group(region_group)
+      //.valueAccessor(percapAccessor)
       .valueAccessor(valueAccessor)
       .projection(projection)
       .colorAccessor(function(d){return d + 1})
